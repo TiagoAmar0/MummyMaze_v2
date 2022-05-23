@@ -209,54 +209,71 @@ public class MummyMazeState extends State implements Cloneable {
         return true;
     }
 
-    // Hero doesn't move, only the enemies move
-    public void stand() {
-        moveWhiteMummies();
-    }
-
     private void moveWhiteMummies() {
         int mov = 0;
 
         for(Position p : whiteMummiesPosition){
-            while(!lost && heroPositionColumn < p.getY() &&mummyCanMoveLeft(p.getX(), p.getY()) && mov < 2) {
-                matrix[p.getX()][p.getY()] = EMPTY;
-                p.setY(p.getY() - 2);
-                if (matrix[p.getX()][p.getY()] == HERO) {
-                    lost = true;
-                }
-                matrix[p.getX()][p.getY()] = WHITE_MUMMY;
-                mov++;
-            }
+            mov = moveMummyHorizontally(mov, p);
 
-            while(!lost && heroPositionColumn > p.getY() && mummyCanMoveRight(p.getX(), p.getY()) && mov < 2){
-                matrix[p.getX()][p.getY()] = EMPTY;
-                p.setY(p.getY() + 2);
-                if(matrix[p.getX()][p.getY()] == HERO){
-                    lost = true;
-                }
-                matrix[p.getX()][p.getY()] = WHITE_MUMMY;
-                mov++;
-            }
-
-            while (!lost && heroPositionLine < p.getX()&& mummyCanMoveUp(p.getX(), p.getY()) && mov < 2){
-                matrix[p.getX()][p.getY()] = EMPTY;
-                p.setX(p.getX() - 2);
-                if(matrix[p.getX()][p.getY()] == HERO){
-                    lost = true;
-                }
-                matrix[p.getX()][p.getY()] = WHITE_MUMMY;
-                mov++;
-            }
-            while (!lost && heroPositionLine > p.getX() && mummyCanMoveDown(p.getX(), p.getY()) && mov < 2){
-                matrix[p.getX()][p.getY()] = EMPTY;
-                p.setX(p.getX() + 2);
-                if(matrix[p.getX()][p.getY()] == HERO){
-                    lost = true;
-                }
-                matrix[p.getX()][p.getY()] = WHITE_MUMMY;
-                mov++;
-            }
+            if(mov < 2)
+                moveMummyVertically(mov, p);
         }
+    }
+
+    private void moveRedMummies(){
+        int mov = 0;
+
+        for(Position p : redMummiesPosition){
+            mov = moveMummyVertically(mov, p);
+            if(mov < 2)
+                moveMummyHorizontally(mov, p);
+        }
+    }
+
+    private int moveMummyVertically(int mov, Position p){
+        while (!lost && heroPositionLine < p.getX()&& mummyCanMoveUp(p.getX(), p.getY()) && mov < 2){
+            matrix[p.getX()][p.getY()] = EMPTY;
+            p.setX(p.getX() - 2);
+            if(matrix[p.getX()][p.getY()] == HERO){
+                lost = true;
+            }
+            matrix[p.getX()][p.getY()] = WHITE_MUMMY;
+            mov++;
+        }
+        while (!lost && heroPositionLine > p.getX() && mummyCanMoveDown(p.getX(), p.getY()) && mov < 2){
+            matrix[p.getX()][p.getY()] = EMPTY;
+            p.setX(p.getX() + 2);
+            if(matrix[p.getX()][p.getY()] == HERO){
+                lost = true;
+            }
+            matrix[p.getX()][p.getY()] = WHITE_MUMMY;
+            mov++;
+        }
+        return mov;
+    }
+
+    private int moveMummyHorizontally(int mov, Position p){
+        while(!lost && heroPositionColumn < p.getY() &&mummyCanMoveLeft(p.getX(), p.getY()) && mov < 2) {
+            matrix[p.getX()][p.getY()] = EMPTY;
+            p.setY(p.getY() - 2);
+            if (matrix[p.getX()][p.getY()] == HERO) {
+                lost = true;
+            }
+            matrix[p.getX()][p.getY()] = WHITE_MUMMY;
+            mov++;
+        }
+
+        while(!lost && heroPositionColumn > p.getY() && mummyCanMoveRight(p.getX(), p.getY()) && mov < 2){
+            matrix[p.getX()][p.getY()] = EMPTY;
+            p.setY(p.getY() + 2);
+            if(matrix[p.getX()][p.getY()] == HERO){
+                lost = true;
+            }
+            matrix[p.getX()][p.getY()] = WHITE_MUMMY;
+            mov++;
+        }
+
+        return mov;
     }
 
     private boolean mummyCanMoveDown(int x, int y) {
@@ -307,6 +324,16 @@ public class MummyMazeState extends State implements Cloneable {
         return true;
     }
 
+    private void moveEnemies(){
+        moveWhiteMummies();
+        moveRedMummies();
+    }
+
+    // Hero doesn't move, only the enemies move
+    public void stand() {
+        moveEnemies();
+    }
+
     public void moveUp() {
 
         int x = matrix[heroPositionLine - 1][heroPositionColumn] == EXIT ? heroPositionLine - 1 : heroPositionLine - 2;
@@ -316,7 +343,8 @@ public class MummyMazeState extends State implements Cloneable {
 
         heroPositionLine = x;
 
-        moveWhiteMummies();
+        moveEnemies();
+
     }
 
     public void moveRight() {
@@ -327,7 +355,7 @@ public class MummyMazeState extends State implements Cloneable {
 
         heroPositionColumn = y;
 
-        moveWhiteMummies();
+        moveEnemies();
     }
 
     public void moveDown() {
@@ -339,7 +367,7 @@ public class MummyMazeState extends State implements Cloneable {
 
         heroPositionLine = x;
 
-        moveWhiteMummies();
+        moveEnemies();
     }
 
     public void moveLeft() {
@@ -352,7 +380,7 @@ public class MummyMazeState extends State implements Cloneable {
 
         heroPositionColumn = y;
 
-        moveWhiteMummies();
+        moveEnemies();
     }
 
     public int getNumLines() {
