@@ -48,12 +48,20 @@ public class MummyMazeProblem extends Problem<MummyMazeState> {
 
     @Override
     public boolean isGoal(MummyMazeState state) {
-        LinkedList<Position> exits = state.getExits();
 
+        char[][] matrix = state.getMatrix();
 
-        for(Position p : exits)
-            if(p.getX() == state.getHeroPositionLine() && p.getY() == state.getHeroPositionColumn())
-                return true;
+        if(state.getHeroPositionLine() <= matrix.length - 2 && matrix[state.getHeroPositionLine() + 1][state.getHeroPositionColumn()] == EXIT)
+            return true;
+
+        if(state.getHeroPositionLine() >= 2 && matrix[state.getHeroPositionLine() - 1][state.getHeroPositionColumn()] == EXIT)
+            return true;
+
+        if(state.getHeroPositionColumn() <= matrix[0].length - 2 && matrix[state.getHeroPositionLine()][state.getHeroPositionColumn() + 1] == EXIT)
+            return true;
+
+        if(state.getHeroPositionLine() >= 2 && matrix[state.getHeroPositionLine()][state.getHeroPositionColumn() - 1] == EXIT)
+            return true;
 
         return false;
     }
