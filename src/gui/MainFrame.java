@@ -50,7 +50,7 @@ public class MainFrame extends JFrame {
                     " . . . . . . \n" +
                     " S           \n";
 
-    private MummyMazeState initialState = new MummyMazeState(initialStringState);
+    private MummyMazeState initialState = new MummyMazeState(initialStringState, false);
     private MummyMazeAgent agent = new MummyMazeAgent(initialState);
     private JComboBox comboBoxSearchMethods;
     private JComboBox comboBoxHeuristics;
