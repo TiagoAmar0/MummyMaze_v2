@@ -51,10 +51,6 @@ public class GameArea extends JPanel implements MummyMazeListener {
 		showSolutionCost = true;
 	}
 
-	public GameArea() {
-	}
-
-
 	private void loadImages(){
 		trap = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/sprites/armadilha.png"));
 		key = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/sprites/chave.png"));
@@ -131,12 +127,10 @@ public class GameArea extends JPanel implements MummyMazeListener {
 		cost = 0;
 	}
 
-
-
 	@Override
 	public void gameChanged(MummyMazeEvent pe) {
 		if(cost == 0)
-			cost=1;
+			cost = 1;
 		solutionCost++;
 		repaint();
 		try {
