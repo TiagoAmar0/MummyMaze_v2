@@ -34,10 +34,9 @@ public class MummyMazeState extends State implements Cloneable {
 
     private boolean lost;
 
-    public MummyMazeState(char[][] matrix) {
+    public MummyMazeState(char[][] matrix, boolean lost) {
         this.matrix = new char[matrix.length][matrix.length];
-        lost = false;
-
+        this.lost = lost;
         this.whiteMummiesPosition = new LinkedList<>();
         this.redMummiesPosition = new LinkedList<>();
         this.scorpionsPosition = new LinkedList<>();
@@ -77,9 +76,9 @@ public class MummyMazeState extends State implements Cloneable {
         return matrix;
     }
 
-    public MummyMazeState(String matrix){
+    public MummyMazeState(String matrix, boolean lost){
         this.matrix = new char[13][13];
-        lost = false;
+        this.lost = lost;
         this.whiteMummiesPosition = new LinkedList<>();
         this.redMummiesPosition = new LinkedList<>();
         this.scorpionsPosition = new LinkedList<>();
@@ -206,8 +205,11 @@ public class MummyMazeState extends State implements Cloneable {
     }
 
     private int moveEnemyVertically(int mov, Position p, int limit, char enemy){
-        while (!lost && heroPositionLine < p.getX()&& canEnemyMoveUp(p.getX(), p.getY()) && mov < limit){
+        while (!lost && heroPositionLine < p.getX()&& canEnemyMoveUp(p.getX(), p.getY(), enemy) && mov < limit){
             matrix[p.getX()][p.getY()] = EMPTY;
+
+            checkIfKillMummy(p.getX() - 2, p.getY(), enemy);
+
             p.setX(p.getX() - 2);
             if(matrix[p.getX()][p.getY()] == HERO){
                 lost = true;
@@ -215,8 +217,11 @@ public class MummyMazeState extends State implements Cloneable {
             matrix[p.getX()][p.getY()] = enemy;
             mov++;
         }
-        while (!lost && heroPositionLine > p.getX() && canEnemyMoveDown(p.getX(), p.getY()) && mov < limit){
+        while (!lost && heroPositionLine > p.getX() && canEnemyMoveDown(p.getX(), p.getY(), enemy) && mov < limit){
             matrix[p.getX()][p.getY()] = EMPTY;
+
+            checkIfKillMummy(p.getX() + 2, p.getY(), enemy);
+
             p.setX(p.getX() + 2);
             if(matrix[p.getX()][p.getY()] == HERO){
                 lost = true;
@@ -228,18 +233,25 @@ public class MummyMazeState extends State implements Cloneable {
     }
 
     private int moveEnemyHorizontally(int mov, Position p, int limit, char enemy){
-        while(!lost && heroPositionColumn < p.getY() && canEnemyMoveLeft(p.getX(), p.getY()) && mov < limit) {
+        while(!lost && heroPositionColumn < p.getY() && canEnemyMoveLeft(p.getX(), p.getY(), enemy) && mov < limit) {
             matrix[p.getX()][p.getY()] = EMPTY;
+
+            checkIfKillMummy(p.getX(), p.getY() - 2, enemy);
+
             p.setY(p.getY() - 2);
             if (matrix[p.getX()][p.getY()] == HERO) {
                 lost = true;
             }
+
             matrix[p.getX()][p.getY()] = enemy;
             mov++;
         }
 
-        while(!lost && heroPositionColumn > p.getY() && canEnemyMoveRight(p.getX(), p.getY()) && mov < limit){
+        while(!lost && heroPositionColumn > p.getY() && canEnemyMoveRight(p.getX(), p.getY(), enemy) && mov < limit){
             matrix[p.getX()][p.getY()] = EMPTY;
+
+            checkIfKillMummy(p.getX(), p.getY() + 2, enemy);
+
             p.setY(p.getY() + 2);
             if(matrix[p.getX()][p.getY()] == HERO){
                 lost = true;
@@ -249,6 +261,16 @@ public class MummyMazeState extends State implements Cloneable {
         }
 
         return mov;
+    }
+
+    private void checkIfKillMummy(int x, int y, char enemy){
+        // If white mummies collide, kill the mummy that was first in the position
+        if((enemy == WHITE_MUMMY || enemy == RED_MUMMY) && matrix[x][y] == WHITE_MUMMY)
+            removeEnemyFromList(whiteMummiesPosition, x, y);
+
+        // If white mummies collide, kill the mummy that was first in the position
+        if((enemy == WHITE_MUMMY || enemy == RED_MUMMY) && matrix[x][y] == RED_MUMMY)
+            removeEnemyFromList(redMummiesPosition, x, y);
     }
 
     private void moveRedMummies(){
@@ -265,8 +287,14 @@ public class MummyMazeState extends State implements Cloneable {
         }
     }
 
-    private boolean canEnemyMoveDown(int x, int y) {
+    private boolean canEnemyMoveDown(int x, int y, char enemy) {
         if(x >= matrix.length - 2)
+            return false;
+
+        if(enemy == SCORPION && (matrix[x + 2][y] == RED_MUMMY || matrix[x + 2][y] == WHITE_MUMMY))
+            return false;
+
+        if(matrix[x + 2][y] == SCORPION)
             return false;
 
         // Cannot if it is a wall or closed horizontal door
@@ -277,8 +305,14 @@ public class MummyMazeState extends State implements Cloneable {
         return true;
     }
 
-    private boolean canEnemyMoveUp(int x, int y) {
+    private boolean canEnemyMoveUp(int x, int y, char enemy) {
         if(x <= 1)
+            return false;
+
+        if(enemy == SCORPION && (matrix[x - 2][y] == RED_MUMMY || matrix[x - 2][y] == WHITE_MUMMY))
+            return false;
+
+        if(matrix[x - 2][y] == SCORPION)
             return false;
 
         // Cannot if it is a wall or closed horizontal door
@@ -289,8 +323,14 @@ public class MummyMazeState extends State implements Cloneable {
         return true;
     }
 
-    private boolean canEnemyMoveRight(int x, int y) {
+    private boolean canEnemyMoveRight(int x, int y, char enemy) {
         if(y >= matrix[x].length - 2)
+            return false;
+
+        if(enemy == SCORPION && (matrix[x][y + 2] == RED_MUMMY || matrix[x][y + 2] == WHITE_MUMMY))
+            return false;
+
+        if(matrix[x][y + 2] == SCORPION)
             return false;
 
         // Cannot if it is a wall or closed vertical door
@@ -301,8 +341,14 @@ public class MummyMazeState extends State implements Cloneable {
         return true;
     }
 
-    private boolean canEnemyMoveLeft(int x, int y) {
+    private boolean canEnemyMoveLeft(int x, int y, char enemy) {
         if(y <= 1)
+            return false;
+
+        if(enemy == SCORPION && (matrix[x][y - 2] == RED_MUMMY || matrix[x][y - 2] == WHITE_MUMMY))
+            return false;
+
+        if(matrix[x][y - 2] == SCORPION)
             return false;
 
         // Cannot if it is a wall, closed vertical door
@@ -396,6 +442,14 @@ public class MummyMazeState extends State implements Cloneable {
         return line >= 0 && line < matrix.length && column >= 0 && column < matrix[0].length;
     }
 
+    private LinkedList<Position> removeEnemyFromList(LinkedList<Position> list, int x, int y){
+        for(Position p : list)
+            if(p.getX() == x && p.getY() == y)
+                list.remove(p);
+
+        return list;
+    }
+
     @Override
     public boolean equals(Object other) {
         if (!(other instanceof MummyMazeState)) {
@@ -430,7 +484,7 @@ public class MummyMazeState extends State implements Cloneable {
 
     @Override
     public MummyMazeState clone() {
-        return new MummyMazeState(matrix);
+        return new MummyMazeState(matrix, lost);
     }
     //Listeners
     private transient ArrayList<MummyMazeListener> listeners = new ArrayList<MummyMazeListener>(3);

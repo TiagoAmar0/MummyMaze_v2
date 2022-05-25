@@ -31,7 +31,7 @@ public class MummyMazeAgent extends Agent<MummyMazeState>{
         for(int i = 0; i < 13; i++)
             matrix[i] = scanner.nextLine().toCharArray();
 
-        initialEnvironment = new MummyMazeState(matrix);
+        initialEnvironment = new MummyMazeState(matrix, false);
         resetEnvironment();
         return environment;
     }
