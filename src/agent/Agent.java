@@ -2,7 +2,6 @@ package agent;
 
 import java.util.ArrayList;
 
-import gui.SolutionPanel;
 import searchmethods.*;
 
 public class Agent<E extends State> {

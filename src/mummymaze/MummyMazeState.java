@@ -116,9 +116,6 @@ public class MummyMazeState extends State implements Cloneable {
     }
 
     public boolean canMoveUp() {
-        // If the position above the hero is an exit, it can move
-        if(matrix[heroPositionLine - 1][heroPositionColumn] == EXIT)
-            return true;
 
         // If hero in first line, cannot move up
         if(heroPositionLine <= 1)
@@ -137,10 +134,6 @@ public class MummyMazeState extends State implements Cloneable {
     }
 
     public boolean canMoveRight() {
-        // If the position on the right of the hero is an exit, it can move
-        if(matrix[heroPositionLine][heroPositionColumn + 1] == EXIT)
-            return true;
-
         if(heroPositionColumn >= matrix[heroPositionLine].length - 2)
             return false;
 
@@ -157,10 +150,6 @@ public class MummyMazeState extends State implements Cloneable {
     }
 
     public boolean canMoveDown() {
-        // If the position under the hero is an exit, it can move
-        if(matrix[heroPositionLine + 1][heroPositionColumn] == EXIT)
-            return true;
-
         if(heroPositionLine >= matrix.length - 2)
             return false;
 
@@ -177,11 +166,6 @@ public class MummyMazeState extends State implements Cloneable {
     }
 
     public boolean canMoveLeft() {
-        // If the position on the left of the hero is an exit, it can move
-        if(matrix[heroPositionLine][heroPositionColumn - 1] == EXIT)
-            return true;
-
-
         if(heroPositionColumn <= 1)
             return false;
 

@@ -50,7 +50,8 @@ public class MainFrame extends JFrame {
                     " . . . . . . \n" +
                     " S           \n";
 
-    private MummyMazeAgent agent = new MummyMazeAgent(new MummyMazeState(initialStringState));
+    private MummyMazeState initialState = new MummyMazeState(initialStringState);
+    private MummyMazeAgent agent = new MummyMazeAgent(initialState);
     private JComboBox comboBoxSearchMethods;
     private JComboBox comboBoxHeuristics;
     private JLabel labelSearchParameter = new JLabel("limit/beam size:");
@@ -113,6 +114,7 @@ public class MainFrame extends JFrame {
         JPanel puzzlePanel = new JPanel(new FlowLayout());
         gameArea = new GameArea(agent.getEnvironment());
         puzzlePanel.add(gameArea);
+        gameArea.setState(initialState);
         textArea = new JTextArea(15, 31);
         JScrollPane scrollPane = new JScrollPane(textArea);
         textArea.setEditable(false);
