@@ -35,7 +35,7 @@ import searchmethods.SearchMethod;
 public class MainFrame extends JFrame {
 
 
-    String initialStringState =
+    /*String initialStringState =
             "             \n" +
                     " . . . . .|. \n" +
                     "     -       \n" +
@@ -48,6 +48,21 @@ public class MainFrame extends JFrame {
                     " . . . M . . \n" +
                     "         -   \n" +
                     " . . . . . . \n" +
+                    " S           \n";*/
+
+    String initialStringState =
+            "             \n" +
+                    " . . . . .|. \n" +
+                    "     -       \n" +
+                    " . . . . .\"H \n" +
+                    "     -       \n" +
+                    " . . . . .|. \n" +
+                    "             \n" +
+                    " . . . . .|C \n" +
+                    "   - -       \n" +
+                    " . . .   .|. \n" +
+                    "             \n" +
+                    " . . . . .|. \n" +
                     " S           \n";
 
     private MummyMazeState initialState = new MummyMazeState(initialStringState, false);

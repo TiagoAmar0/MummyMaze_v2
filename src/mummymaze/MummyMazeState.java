@@ -61,12 +61,6 @@ public class MummyMazeState extends State implements Cloneable {
                         scorpionsPosition.add(new Position(i,j));
                         break;
                 }
-
-                /*
-                if(matrix[i][j] == 'H'){
-                    heroPositionLine = i;
-                    heroPositionColumn = j;
-                }*/
             }
         }
 
@@ -374,6 +368,9 @@ public class MummyMazeState extends State implements Cloneable {
 
         int x = matrix[heroPositionLine - 1][heroPositionColumn] == EXIT ? heroPositionLine - 1 : heroPositionLine - 2;
 
+        if(matrix[x][heroPositionColumn] == KEY)
+            toggleDoors();
+
         matrix[heroPositionLine][heroPositionColumn] = EMPTY;
         matrix[x][heroPositionColumn] = HERO;
 
@@ -385,6 +382,9 @@ public class MummyMazeState extends State implements Cloneable {
 
     public void moveRight() {
         int y = matrix[heroPositionLine][heroPositionColumn + 1] == EXIT ? heroPositionColumn + 1 : heroPositionColumn + 2;
+
+        if(matrix[heroPositionLine][y] == KEY)
+            toggleDoors();
 
         matrix[heroPositionLine][heroPositionColumn] = EMPTY;
         matrix[heroPositionLine][y] = HERO;
@@ -398,6 +398,9 @@ public class MummyMazeState extends State implements Cloneable {
 
         int x = matrix[heroPositionLine + 1][heroPositionColumn] == EXIT ? heroPositionLine + 1 : heroPositionLine + 2;
 
+        if(matrix[x][heroPositionColumn] == KEY)
+            toggleDoors();
+
         matrix[heroPositionLine][heroPositionColumn] = EMPTY;
         matrix[x][heroPositionColumn] = HERO;
 
@@ -409,6 +412,9 @@ public class MummyMazeState extends State implements Cloneable {
     public void moveLeft() {
 
         int y = matrix[heroPositionLine][heroPositionColumn - 1] == EXIT ? heroPositionColumn - 1 : heroPositionColumn - 2;
+
+        if(matrix[heroPositionLine][y] == KEY)
+            toggleDoors();
 
         matrix[heroPositionLine][heroPositionColumn] = EMPTY;
         matrix[heroPositionLine][y] = HERO;
@@ -436,6 +442,28 @@ public class MummyMazeState extends State implements Cloneable {
             throw new IndexOutOfBoundsException("Invalid position!");
         }
         return matrix[line][column];
+    }
+
+    // Toggle doors
+    private void toggleDoors(){
+        for (int i = 0; i < this.matrix.length; i++){
+            for (int j = 0; j < this.matrix[0].length; j++){
+                switch (this.matrix[i][j]){
+                    case CLOSED_HORIZONTAL_DOOR:
+                        this.matrix[i][j] = OPENED_HORIZONTAL_DOOR;
+                        break;
+                    case OPENED_HORIZONTAL_DOOR:
+                        this.matrix[i][j] = CLOSED_HORIZONTAL_DOOR;
+                        break;
+                    case CLOSED_VERTICAL_DOOR:
+                        this.matrix[i][j] = OPENED_VERTICAL_DOOR;
+                        break;
+                    case OPENED_VERTICAL_DOOR:
+                        this.matrix[i][j] = CLOSED_VERTICAL_DOOR;
+                        break;
+                }
+            }
+        }
     }
 
     public boolean isValidPosition(int line, int column) {
