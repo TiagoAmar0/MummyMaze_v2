@@ -31,6 +31,7 @@ public class MummyMazeState extends State implements Cloneable {
     private LinkedList<Position> redMummiesPosition;
     private LinkedList<Position> whiteMummiesPosition;
     private LinkedList<Position> scorpionsPosition;
+    private LinkedList<Position> keysPosition;
 
     private boolean lost;
 
@@ -40,6 +41,43 @@ public class MummyMazeState extends State implements Cloneable {
         this.whiteMummiesPosition = new LinkedList<>();
         this.redMummiesPosition = new LinkedList<>();
         this.scorpionsPosition = new LinkedList<>();
+        this.keysPosition = new LinkedList<>();
+
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[i].length; j++) {
+
+                this.matrix[i][j] = matrix[i][j];
+
+                switch (matrix[i][j]){
+                    case HERO:
+                        heroPositionLine = i;
+                        heroPositionColumn = j;
+                        break;
+                    case KEY:
+                        keysPosition.add(new Position(i,j));
+                        break;
+                    case WHITE_MUMMY:
+                        whiteMummiesPosition.add(new Position(i, j));
+                        break;
+                    case RED_MUMMY:
+                        redMummiesPosition.add(new Position(i,j));
+                        break;
+                    case SCORPION:
+                        scorpionsPosition.add(new Position(i,j));
+                        break;
+                }
+            }
+        }
+
+    }
+
+    public MummyMazeState(char[][] matrix, boolean lost, LinkedList<Position> keysPosition) {
+        this.matrix = new char[matrix.length][matrix.length];
+        this.lost = lost;
+        this.whiteMummiesPosition = new LinkedList<>();
+        this.redMummiesPosition = new LinkedList<>();
+        this.scorpionsPosition = new LinkedList<>();
+        this.keysPosition = new LinkedList<>(keysPosition);
 
         for (int i = 0; i < matrix.length; i++) {
             for (int j = 0; j < matrix[i].length; j++) {
@@ -63,7 +101,6 @@ public class MummyMazeState extends State implements Cloneable {
                 }
             }
         }
-
     }
 
     public char[][] getMatrix(){
@@ -75,6 +112,7 @@ public class MummyMazeState extends State implements Cloneable {
         this.lost = lost;
         this.whiteMummiesPosition = new LinkedList<>();
         this.redMummiesPosition = new LinkedList<>();
+        this.keysPosition = new LinkedList<>();
         this.scorpionsPosition = new LinkedList<>();
 
         String[] matrixLines = matrix.split("\n");
@@ -93,6 +131,9 @@ public class MummyMazeState extends State implements Cloneable {
                         break;
                     case RED_MUMMY:
                         redMummiesPosition.add(new Position(i,j));
+                        break;
+                    case KEY:
+                        keysPosition.add(new Position(i,j));
                         break;
                     case SCORPION:
                         scorpionsPosition.add(new Position(i,j));
@@ -372,6 +413,11 @@ public class MummyMazeState extends State implements Cloneable {
             toggleDoors();
 
         matrix[heroPositionLine][heroPositionColumn] = EMPTY;
+        for (Position position : keysPosition)
+            if(position.getX() == heroPositionLine && position.getY() == heroPositionColumn)
+                matrix[heroPositionLine][heroPositionColumn] = KEY;
+
+
         matrix[x][heroPositionColumn] = HERO;
 
         heroPositionLine = x;
@@ -387,6 +433,10 @@ public class MummyMazeState extends State implements Cloneable {
             toggleDoors();
 
         matrix[heroPositionLine][heroPositionColumn] = EMPTY;
+        for (Position position : keysPosition)
+            if(position.getX() == heroPositionLine && position.getY() == heroPositionColumn)
+                matrix[heroPositionLine][heroPositionColumn] = KEY;
+
         matrix[heroPositionLine][y] = HERO;
 
         heroPositionColumn = y;
@@ -402,6 +452,10 @@ public class MummyMazeState extends State implements Cloneable {
             toggleDoors();
 
         matrix[heroPositionLine][heroPositionColumn] = EMPTY;
+        for (Position position : keysPosition)
+            if(position.getX() == heroPositionLine && position.getY() == heroPositionColumn)
+                matrix[heroPositionLine][heroPositionColumn] = KEY;
+
         matrix[x][heroPositionColumn] = HERO;
 
         heroPositionLine = x;
@@ -417,6 +471,10 @@ public class MummyMazeState extends State implements Cloneable {
             toggleDoors();
 
         matrix[heroPositionLine][heroPositionColumn] = EMPTY;
+        for (Position position : keysPosition)
+            if(position.getX() == heroPositionLine && position.getY() == heroPositionColumn)
+                matrix[heroPositionLine][heroPositionColumn] = KEY;
+
         matrix[heroPositionLine][y] = HERO;
 
 
@@ -512,7 +570,7 @@ public class MummyMazeState extends State implements Cloneable {
 
     @Override
     public MummyMazeState clone() {
-        return new MummyMazeState(matrix, lost);
+        return new MummyMazeState(matrix, lost, keysPosition);
     }
     //Listeners
     private transient ArrayList<MummyMazeListener> listeners = new ArrayList<MummyMazeListener>(3);
