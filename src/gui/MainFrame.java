@@ -51,19 +51,19 @@ public class MainFrame extends JFrame {
                     " S           \n";*/
 
     String initialStringState =
-            "             \n" +
-                    " . . . . .|. \n" +
-                    "     -       \n" +
-                    " . . . . .\"H \n" +
-                    "     -       \n" +
-                    " . . . . .|. \n" +
                     "             \n" +
-                    " . . . . .|C \n" +
+                    " E .|. . . H \n" +
                     "   - -       \n" +
-                    " . . .   .|. \n" +
+                    "S.|.|.|. . . \n" +
+                    "           - \n" +
+                    " .|. . . . . \n" +
                     "             \n" +
-                    " . . . . .|. \n" +
-                    " S           \n";
+                    " .|. .|. . . \n" +
+                    "       -     \n" +
+                    " . .|.|. . . \n" +
+                    "     -   -   \n" +
+                    " .|A . . . . \n" +
+                    "             \n";
 
     private MummyMazeState initialState = new MummyMazeState(initialStringState, false);
     private MummyMazeAgent agent = new MummyMazeAgent(initialState);
