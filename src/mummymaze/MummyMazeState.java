@@ -31,6 +31,8 @@ public class MummyMazeState extends State implements Cloneable {
     private LinkedList<Position> redMummiesPosition;
     private LinkedList<Position> whiteMummiesPosition;
     private LinkedList<Position> scorpionsPosition;
+
+    private LinkedList<Position> trapsPosition;
     private LinkedList<Position> keysPosition;
 
     private boolean lost;
@@ -42,6 +44,7 @@ public class MummyMazeState extends State implements Cloneable {
         this.redMummiesPosition = new LinkedList<>();
         this.scorpionsPosition = new LinkedList<>();
         this.keysPosition = new LinkedList<>();
+        this.trapsPosition = new LinkedList<>();
 
         for (int i = 0; i < matrix.length; i++) {
             for (int j = 0; j < matrix[i].length; j++) {
@@ -55,6 +58,9 @@ public class MummyMazeState extends State implements Cloneable {
                         break;
                     case KEY:
                         keysPosition.add(new Position(i,j));
+                        break;
+                    case TRAP:
+                        trapsPosition.add(new Position(i,j));
                         break;
                     case WHITE_MUMMY:
                         whiteMummiesPosition.add(new Position(i, j));
@@ -71,13 +77,14 @@ public class MummyMazeState extends State implements Cloneable {
 
     }
 
-    public MummyMazeState(char[][] matrix, boolean lost, LinkedList<Position> keysPosition) {
+    public MummyMazeState(char[][] matrix, boolean lost, LinkedList<Position> keysPosition, LinkedList<Position> trapsPosition) {
         this.matrix = new char[matrix.length][matrix.length];
         this.lost = lost;
         this.whiteMummiesPosition = new LinkedList<>();
         this.redMummiesPosition = new LinkedList<>();
         this.scorpionsPosition = new LinkedList<>();
         this.keysPosition = new LinkedList<>(keysPosition);
+        this.trapsPosition = new LinkedList<>(trapsPosition);
 
         for (int i = 0; i < matrix.length; i++) {
             for (int j = 0; j < matrix[i].length; j++) {
@@ -114,6 +121,7 @@ public class MummyMazeState extends State implements Cloneable {
         this.redMummiesPosition = new LinkedList<>();
         this.keysPosition = new LinkedList<>();
         this.scorpionsPosition = new LinkedList<>();
+        this.trapsPosition = new LinkedList<>();
 
         String[] matrixLines = matrix.split("\n");
 
@@ -134,6 +142,9 @@ public class MummyMazeState extends State implements Cloneable {
                         break;
                     case KEY:
                         keysPosition.add(new Position(i,j));
+                        break;
+                    case TRAP:
+                        trapsPosition.add(new Position(i,j));
                         break;
                     case SCORPION:
                         scorpionsPosition.add(new Position(i,j));
@@ -242,6 +253,13 @@ public class MummyMazeState extends State implements Cloneable {
     private int moveEnemyVertically(int mov, Position p, int limit, char enemy){
         while (!lost && heroPositionLine < p.getX()&& canEnemyMoveUp(p.getX(), p.getY(), enemy) && mov < limit){
             matrix[p.getX()][p.getY()] = EMPTY;
+            for (Position position : keysPosition)
+                if(position.getX() == p.getX() && position.getY() == p.getY())
+                    matrix[p.getX()][p.getY()] = KEY;
+
+            for (Position position : trapsPosition)
+                if(position.getX() == p.getX() && position.getY() == p.getY())
+                    matrix[p.getX()][p.getY()] = TRAP;
 
             checkIfKillMummy(p.getX() - 2, p.getY(), enemy);
 
@@ -254,6 +272,13 @@ public class MummyMazeState extends State implements Cloneable {
         }
         while (!lost && heroPositionLine > p.getX() && canEnemyMoveDown(p.getX(), p.getY(), enemy) && mov < limit){
             matrix[p.getX()][p.getY()] = EMPTY;
+            for (Position position : keysPosition)
+                if(position.getX() == p.getX() && position.getY() == p.getY())
+                    matrix[p.getX()][p.getY()] = KEY;
+
+            for (Position position : trapsPosition)
+                if(position.getX() == p.getX() && position.getY() == p.getY())
+                    matrix[p.getX()][p.getY()] = TRAP;
 
             checkIfKillMummy(p.getX() + 2, p.getY(), enemy);
 
@@ -270,6 +295,13 @@ public class MummyMazeState extends State implements Cloneable {
     private int moveEnemyHorizontally(int mov, Position p, int limit, char enemy){
         while(!lost && heroPositionColumn < p.getY() && canEnemyMoveLeft(p.getX(), p.getY(), enemy) && mov < limit) {
             matrix[p.getX()][p.getY()] = EMPTY;
+            for (Position position : keysPosition)
+                if(position.getX() == p.getX() && position.getY() == p.getY())
+                    matrix[p.getX()][p.getY()] = KEY;
+
+            for (Position position : trapsPosition)
+                if(position.getX() == p.getX() && position.getY() == p.getY())
+                    matrix[p.getX()][p.getY()] = TRAP;
 
             checkIfKillMummy(p.getX(), p.getY() - 2, enemy);
 
@@ -284,6 +316,13 @@ public class MummyMazeState extends State implements Cloneable {
 
         while(!lost && heroPositionColumn > p.getY() && canEnemyMoveRight(p.getX(), p.getY(), enemy) && mov < limit){
             matrix[p.getX()][p.getY()] = EMPTY;
+            for (Position position : keysPosition)
+                if(position.getX() == p.getX() && position.getY() == p.getY())
+                    matrix[p.getX()][p.getY()] = KEY;
+
+            for (Position position : trapsPosition)
+                if(position.getX() == p.getX() && position.getY() == p.getY())
+                    matrix[p.getX()][p.getY()] = TRAP;
 
             checkIfKillMummy(p.getX(), p.getY() + 2, enemy);
 
@@ -570,7 +609,7 @@ public class MummyMazeState extends State implements Cloneable {
 
     @Override
     public MummyMazeState clone() {
-        return new MummyMazeState(matrix, lost, keysPosition);
+        return new MummyMazeState(matrix, lost, keysPosition, trapsPosition);
     }
     //Listeners
     private transient ArrayList<MummyMazeListener> listeners = new ArrayList<MummyMazeListener>(3);

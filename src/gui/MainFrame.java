@@ -54,7 +54,7 @@ public class MainFrame extends JFrame {
                     "             \n" +
                     " E .|. . . H \n" +
                     "   - -       \n" +
-                    "S.|.|.|. . . \n" +
+                    "SC|.|.|. . . \n" +
                     "           - \n" +
                     " .|. . . . . \n" +
                     "             \n" +
