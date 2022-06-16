@@ -256,6 +256,7 @@ public class MainFrame extends JFrame {
 
     public void buttonReset_ActionPerformed(ActionEvent e) {
         gameArea.setState(agent.resetEnvironment());
+        gameArea.setSolutionCost(0);
         buttonShowSolution.setEnabled(true);
         buttonReset.setEnabled(false);
     }
