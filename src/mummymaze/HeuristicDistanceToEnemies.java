@@ -27,7 +27,7 @@ public class HeuristicDistanceToEnemies extends Heuristic<MummyMazeProblem, Mumm
             }
         }
 
-        return maxDiagonal - distance;
+        return distance == Double.MAX_VALUE ? 1 : maxDiagonal - distance;
     }
     
     @Override
