@@ -227,12 +227,11 @@ public class MummyMazeState extends State implements Cloneable {
     }
 
     private void moveWhiteMummies() {
-        int mov = 0;
 
         // Loop all white mummies
         for(Position p : whiteMummiesPosition){
             // First try to put the mummy in same column as the hero
-            mov = moveEnemyHorizontally(mov, p, 2, WHITE_MUMMY);
+            int mov = moveEnemyHorizontally(0, p, 2, WHITE_MUMMY);
 
             // If there are available movements left, try to put the mummy in the same row as the hero
             if(mov < 2)
@@ -241,9 +240,8 @@ public class MummyMazeState extends State implements Cloneable {
     }
 
     private void moveScorpions(){
-        int mov = 0;
         for (Position p : scorpionsPosition){
-            mov = moveEnemyHorizontally(mov, p, 1, SCORPION);
+            int mov = moveEnemyHorizontally(0, p, 1, SCORPION);
 
             if(mov < 1)
                 moveEnemyVertically(mov, p, 1, SCORPION);
@@ -270,6 +268,7 @@ public class MummyMazeState extends State implements Cloneable {
             matrix[p.getX()][p.getY()] = enemy;
             mov++;
         }
+
         while (!lost && heroPositionLine > p.getX() && canEnemyMoveDown(p.getX(), p.getY(), enemy) && mov < limit){
             matrix[p.getX()][p.getY()] = EMPTY;
             for (Position position : keysPosition)
@@ -348,12 +347,10 @@ public class MummyMazeState extends State implements Cloneable {
     }
 
     private void moveRedMummies(){
-        int mov = 0;
-
         // Loop all red mummies
         for(Position p : redMummiesPosition){
             // First try to put the mummy in the same row as the hero
-            mov = moveEnemyVertically(mov, p, 2, RED_MUMMY);
+            int mov = moveEnemyVertically(0, p, 2, RED_MUMMY);
 
             // If there are available movements left, try to put the mummy in the same column as the hero
             if(mov < 2)
